@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Military Encryption System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --glass-bg: rgba(32, 49, 32, 0.82);
+      --glass-border: rgba(168, 207, 69, 0.22);
+      --accent: #a8cf45;
+      --accent-glow: 0 0 30px #a8cf45bb, 0 0 8px #a8cf45a0;
+      --card-gradient: linear-gradient(135deg, rgba(35, 55, 35, 0.88) 60%, #1f2a1f 100%);
+      --highlight: #5eec85;
+    }
+    html, body {
+      font-family: 'Roboto', sans-serif;
+      background:
+        url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat,
+        url('data:image/svg+xml;utf8,<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><rect fill="%231f2a1f" width="400" height="400"/><path fill="%23324c31" d="M90 50c30-15 60 0 70 20s0 40-30 40-40-30-40-50z"/><path fill="%235d7c59" d="M250 100c40-20 80 10 80 40s-20 40-50 40-50-30-50-60z"/><ellipse fill="%234a6242" cx="110" cy="170" rx="60" ry="30"/><ellipse fill="%235f7f56" cx="320" cy="220" rx="60" ry="35"/><ellipse fill="%233a433a" cx="200" cy="300" rx="110" ry="60"/></svg>')
+        center/700px repeat,
+        #1f2a1f;
+      min-height: 100vh;
+      color: #d9e4dd;
+      scroll-behavior: smooth;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      background: rgba(31,42,31,0.93);
+      z-index: 0;
+      pointer-events: none;
+      backdrop-filter: blur(4px) brightness(1.1);
+    }
+    .mtc-building-bg {
+      position: fixed; left: 50%; bottom: 0;
+      transform: translateX(-50%);
+      width: 100vw; min-width: 800px; max-width: 1600px;
+      z-index: 1; opacity: 0.28;
+      pointer-events: none; user-select: none;
+    }
+    .drone-3d {
+      position: fixed;
+      top: 3rem; left: 50%;
+      width: 290px; opacity: 0.23;
+      z-index: 2; pointer-events: none; user-select: none;
+      filter: drop-shadow(0 0 25px #000) drop-shadow(0 0 20px #a8cf45cc) grayscale(0.1);
+      transform: rotate(-11deg) translateX(-40%) scale(1.15);
+      transition: opacity 0.3s;
+    }
+    @media (max-width: 900px) {
+      .drone-3d { width: 120px; left: 54%; }
+      .mtc-building-bg { width: 700px; min-width: 400px;}
+    }
+    @media (max-width: 600px) {
+      .drone-3d { display: none; }
+      .mtc-building-bg { display: none; }
+    }
+    nav {
+      backdrop-filter: blur(9px);
+      background: rgba(31, 47, 31, 0.91);
+      border-bottom: 2px solid var(--glass-border);
+      box-shadow: 0 4px 32px #a8cf4525;
+      z-index: 20;
+    }
+    .tab {
+      transition: 0.25s;
+      background: transparent;
+      padding: 0.7rem 2.1rem;
+      font-size: 1.16rem;
+      font-weight: 700;
+      border-radius: 0.75rem;
+      border: 2px solid transparent;
+      letter-spacing: 1px;
+    }
+    .tab.active, .tab:hover, .tab:focus {
+      background: var(--glass-bg);
+      color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: var(--accent-glow);
+      transform: translateY(-2px) scale(1.07);
+      outline: none;
+    }
+    .glass-card {
+      background: var(--glass-bg);
+      border: 2px solid var(--glass-border);
+      box-shadow: 0 8px 40px #0008, 0 2px 12px #a8cf4522;
+      backdrop-filter: blur(9px) brightness(1.05);
+      border-radius: 2rem;
+      overflow: hidden;
+      transition: 0.25s;
+    }
+    .glass-card:hover, .glass-card:focus-within {
+      box-shadow: 0 8px 80px #a8cf45bb, 0 2px 20px #5eec8544;
+      transform: scale(1.045);
+      border-color: var(--accent);
+    }
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: 0.05em;
+      text-shadow: 0 2px 18px #000c, 0 1px 4px #000a;
+      color: var(--accent);
+      margin-bottom: 1.3rem;
+      margin-top: 3.7rem;
+      filter: drop-shadow(0 0 7px #5eec8577);
+    }
+    .hero-desc {
+      font-size: 1.3rem;
+      line-height: 2.1;
+      color: #e4f9cf;
+      margin-bottom: 2.5rem;
+      text-shadow: 0 2px 8px #1f2a1f44;
+    }
+    .feature-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--highlight);
+      letter-spacing: 0.025em;
+      margin-top: 1rem;
+      margin-bottom: 0.1rem;
+      text-shadow: 0 2px 7px #0008;
+    }
+    .feature-desc {
+      font-size: 1.02rem;
+      color: #e5ffec;
+      opacity: 0.93;
+      margin-bottom: 0.6rem;
+      text-shadow: 0 1px 4px #0006;
+    }
+    .feature-icon {
+      width: 75px; height: 75px;
+      margin: 0 auto 1rem;
+      filter: drop-shadow(0 0 12px #a8cf4585);
+      border-radius: 1rem;
+    }
+    @media (max-width: 850px) {
+      .hero-title { font-size: 2.3rem; }
+      .boxes { flex-direction: column; gap: 1.7rem !important; }
+    }
+    @media (max-width: 600px) {
+      .boxes { flex-direction: column !important; }
+      .glass-card { width: 99% !important; min-width: 0 !important; }
+      .hero-title { font-size: 1.6rem; margin-top: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <img src="mtc-line.png" class="mtc-building-bg" alt="MTC Building" />
+  <img src="https://pngimg.com/d/drone_PNG33.png" class="drone-3d" alt="3D Military Drone" />
+
+  <nav class="fixed w-full py-3 px-3 flex justify-center shadow-xl" style="backdrop-filter: blur(9px);">
+    <div class="tab-group flex gap-8">
+      <a href="index.html" class="tab active">Home</a>
+      <a href="encrypt.html" class="tab">Encrypt</a>
+      <a href="Decrypt.html" class="tab">Decrypt</a>
+      <a href="Control.html" class="tab">Control Center</a>
+    </div>
+  </nav>
+
+  <main class="relative z-10 flex flex-col items-center justify-center" style="min-height: 100vh;">
+    <section class="w-full flex flex-col items-center justify-center">
+      <div class="max-w-2xl mx-auto text-center pt-24 pb-8">
+        <h1 class="hero-title">Military Encryption System</h1>
+        <p class="hero-desc">
+          Encrypt & decrypt <span style="color: var(--accent); font-weight:700;">images</span> locally using
+          <span style="color:var(--highlight);font-weight:800;">Chaos Confusion + DNA-Style Diffusion</span>.<br>
+          <span class="font-bold" style="color:var(--highlight);">Confusion</span> scrambles pixels via Logistic-Map permutation,
+          then <span class="font-bold" style="color:var(--highlight);">Diffusion</span> applies bitwise XOR masking for strong diffusion.
+        </p>
+      </div>
+    </section>
+
+    <section class="boxes flex flex-wrap gap-8 justify-center max-w-6xl mb-12" aria-label="Main features">
+      <a href="encrypt.html" class="glass-card flex flex-col items-center px-7 py-8 w-72 text-center cursor-pointer focus:ring-4 focus:ring-lime-400 focus:outline-none transition">
+        <img class="feature-icon" src="https://img.icons8.com/fluency/96/lock.png" alt="Encrypt Icon" />
+        <div class="feature-title">Encrypt</div>
+        <div class="feature-desc">Chaos scrambling + XOR diffusion with entropy & correlation metrics.</div>
+      </a>
+
+      <a href="Decrypt.html" class="glass-card flex flex-col items-center px-7 py-8 w-72 text-center cursor-pointer focus:ring-4 focus:ring-lime-400 focus:outline-none transition">
+        <img class="feature-icon" src="https://img.icons8.com/fluency/96/unlock.png" alt="Decrypt Icon" />
+        <div class="feature-title">Decrypt</div>
+        <div class="feature-desc">Invert diffusion, then invert permutation to recover the exact pixels.</div>
+      </a>
+
+      <a href="Control.html" class="glass-card flex flex-col items-center px-7 py-8 w-72 text-center cursor-pointer focus:ring-4 focus:ring-lime-400 focus:outline-none transition">
+        <img class="feature-icon" src="https://img.icons8.com/fluency/96/server.png" alt="Control Center Icon" />
+        <div class="feature-title">Control Center</div>
+        <div class="feature-desc">Manage UI / dashboards (no cryptographic changes needed here).</div>
+      </a>
+    </section>
+  </main>
+
+  <div class="fixed top-0 left-0 w-1/3 h-1/2 pointer-events-none z-0" style="background: radial-gradient(ellipse 55% 50% at 35% 15%, #a8cf4544 0%, transparent 70%);"></div>
+  <div class="fixed bottom-0 right-0 w-1/2 h-1/3 pointer-events-none z-0" style="background: radial-gradient(ellipse 40% 60% at 80% 100%, #a8cf4577 0%, transparent 80%);"></div>
+</body>
+</html>

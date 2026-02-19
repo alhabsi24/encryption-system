@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Help Center | Military Encryption System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --glass-bg: rgba(32,49,32,0.82);
+      --glass-border: rgba(168,207,69,0.22);
+      --accent:#a8cf45;
+      --accent-glow: 0 0 30px #a8cf45bb, 0 0 8px #a8cf45a0;
+      --highlight:#5eec85;
+
+      /* sections */
+      --guide-color:#5cc1ff;    /* How to use */
+      --analysis-color:#d9c93e; /* Metrics */
+      --support-color:#5dd8a1;  /* Troubleshooting */
+    }
+
+    html, body{
+      font-family:"Roboto",sans-serif;
+      background:
+        url("https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1400&q=80") center/cover no-repeat,
+        url("data:image/svg+xml;utf8,<svg width='400' height='400' xmlns='http://www.w3.org/2000/svg'><rect fill='%231f2a1f' width='400' height='400'/><path fill='%23324c31' d='M90 50c30-15 60 0 70 20s0 40-30 40-40-30-40-50z'/><path fill='%235d7c59' d='M250 100c40-20 80 10 80 40s-20 40-50 40-50-30-50-60z'/><ellipse fill='%234a6242' cx='110' cy='170' rx='60' ry='30'/><ellipse fill='%235f7f56' cx='320' cy='220' rx='60' ry='35'/><ellipse fill='%233a433a' cx='200' cy='300' rx='110' ry='60'/></svg>") center/700px repeat,
+        #1f2a1f;
+      min-height:100vh;
+      color:#d9e4dd;
+      scroll-behavior:smooth;
+      position:relative;
+    }
+
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background:rgba(31,42,31,0.93);
+      z-index:0;
+      pointer-events:none;
+      backdrop-filter: blur(4px) brightness(1.1);
+    }
+
+    nav{
+      backdrop-filter: blur(9px);
+      background: rgba(31,47,31,0.91);
+      border-bottom: 2px solid var(--glass-border);
+      box-shadow: 0 4px 32px #a8cf4525;
+      z-index:20;
+    }
+
+    .tab{
+      transition:0.25s;
+      background:transparent;
+      padding:0.7rem 2.1rem;
+      font-size:1.16rem;
+      font-weight:700;
+      border-radius:0.75rem;
+      border:2px solid transparent;
+      letter-spacing:1px;
+    }
+    .tab.active, .tab:hover, .tab:focus{
+      background:var(--glass-bg);
+      color:var(--accent);
+      border-color:var(--accent);
+      box-shadow:var(--accent-glow);
+      transform: translateY(-2px) scale(1.07);
+      outline:none;
+    }
+
+    .drone-3d{
+      position:fixed;
+      top:1.5rem;
+      left:65%;
+      width:220px;
+      max-width:42vw;
+      opacity:0.17;
+      z-index:2;
+      pointer-events:none;
+      user-select:none;
+      filter: drop-shadow(0 0 17px #000) drop-shadow(0 0 13px #a8cf45cc) grayscale(0.08);
+      transform: rotate(-7deg) scale(1.09);
+      transition: opacity 0.3s;
+    }
+    @media (max-width:900px){ .drone-3d{ width:130px; left:55%; } }
+    @media (max-width:600px){ .drone-3d{ display:none; } }
+
+    main{
+      padding:5rem 1.5rem 3rem;
+      max-width:1200px;
+      margin:auto;
+      z-index:10;
+      position:relative;
+    }
+
+    h1{
+      font-size:3rem;
+      font-weight:900;
+      margin-bottom:0.65rem;
+      color:var(--accent);
+      text-align:center;
+      letter-spacing:0.07em;
+      text-shadow:0 2px 12px #000c;
+    }
+
+    .sub{
+      text-align:center;
+      color:#cfe8b8;
+      opacity:0.93;
+      max-width:980px;
+      margin:0 auto 2.2rem auto;
+      line-height:1.7;
+      font-size:1.03rem;
+      text-shadow:0 1px 4px #0006;
+    }
+
+    .grid-container{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap:2.2rem;
+    }
+
+    .card{
+      background:var(--glass-bg);
+      border:2px solid var(--glass-border);
+      border-radius:1.8rem;
+      box-shadow:0 8px 32px #0008, 0 2px 12px #a8cf4522;
+      padding:2rem 1.8rem 2.4rem 1.8rem;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      transition:0.3s ease;
+      cursor:default;
+      user-select:none;
+    }
+    .card:hover, .card:focus-within{
+      box-shadow:0 12px 52px var(--accent), 0 4px 22px var(--accent);
+      transform:scale(1.04);
+      border-color:var(--accent);
+      outline:none;
+    }
+
+    .icon{
+      width:90px; height:90px;
+      margin-bottom:1.15rem;
+      object-fit:contain;
+      filter: drop-shadow(0 0 10px #a8cf45a0);
+      border-radius:1rem;
+    }
+
+    .title{
+      font-size:1.55rem;
+      font-weight:900;
+      margin-bottom:0.6rem;
+      letter-spacing:0.03em;
+      text-shadow:0 2px 10px #000a;
+      color:var(--accent);
+      user-select:text;
+      text-align:center;
+      line-height:1.25;
+    }
+
+    .desc{
+      color:#c7dca6;
+      font-size:1rem;
+      text-align:center;
+      margin-bottom:1.9rem;
+      user-select:text;
+      line-height:1.55;
+      min-height:88px;
+    }
+
+    .btn-group{
+      display:flex;
+      gap:0.9rem;
+      flex-wrap:wrap;
+      justify-content:center;
+      width:100%;
+    }
+
+    .btn{
+      flex:1 1 130px;
+      background:var(--glass-bg);
+      border:2px solid var(--glass-border);
+      border-radius:1rem;
+      padding:0.82rem 0.4rem;
+      font-weight:800;
+      color:var(--accent);
+      cursor:pointer;
+      text-align:center;
+      transition:0.22s ease;
+      letter-spacing:0.02em;
+      box-shadow:0 0 10px #0008;
+      user-select:none;
+      text-decoration:none;
+      display:inline-block;
+    }
+    .btn:hover, .btn:focus{
+      background:var(--accent);
+      color:#1f2a1f;
+      box-shadow:0 0 25px var(--accent);
+      outline:none;
+      transform:scale(1.06);
+    }
+
+    /* section colors */
+    .guide .title{ color: var(--guide-color); text-shadow: 0 0 12px var(--guide-color); }
+    .guide .btn:hover, .guide .btn:focus{ background: var(--guide-color); box-shadow:0 0 22px var(--guide-color); }
+
+    .analysis .title{ color: var(--analysis-color); text-shadow: 0 0 12px var(--analysis-color); }
+    .analysis .btn:hover, .analysis .btn:focus{ background: var(--analysis-color); box-shadow:0 0 22px var(--analysis-color); }
+
+    .support .title{ color: var(--support-color); text-shadow: 0 0 12px var(--support-color); }
+    .support .btn:hover, .support .btn:focus{ background: var(--support-color); box-shadow:0 0 22px var(--support-color); }
+
+    @media (max-width:600px){
+      main{ padding:3rem 1rem 3rem; }
+      h1{ font-size:2.2rem; }
+      .btn-group{ flex-direction:column; gap:0.7rem; }
+      .btn{ flex:none; width:100%; }
+    }
+
+    /* Modal */
+    .modal-bg{
+      position:fixed; inset:0;
+      background: rgba(10,24,10,0.82);
+      z-index:99;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      animation: fadeIn 0.22s;
+      padding: 1.2rem;
+    }
+    .modal-content{
+      background:var(--glass-bg);
+      border:2px solid var(--glass-border);
+      border-radius:1.4rem;
+      box-shadow:0 8px 40px #000b, 0 2px 12px #a8cf4522;
+      max-width: 950px;
+      width: min(900px, 95vw);
+      padding:2.3rem 1.4rem 1.2rem 1.4rem;
+      position:relative;
+      animation: slideIn 0.22s;
+    }
+    .modal-content h2{
+      font-size:1.55rem;
+      margin-bottom:0.9rem;
+      color:var(--accent);
+      font-weight:900;
+      text-align:center;
+      letter-spacing:0.02em;
+    }
+    .close-modal{
+      position:absolute; top: 12px; right: 18px;
+      background:none; border:none;
+      font-size:1.7rem; color:#c0e7b8;
+      cursor:pointer; font-weight:900;
+      transition: color 0.18s;
+    }
+    .close-modal:hover{ color:#ff6a6a; }
+
+    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+    @keyframes slideIn{ from{ transform: translateY(45px); opacity:0 } to{ transform:none; opacity:1 } }
+
+    .list{ margin-top: 1rem; }
+    .list li{
+      margin-bottom:0.85rem;
+      background:#232f2370;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      line-height:1.6;
+    }
+    .muted{
+      color:#a1e0b6;
+      margin-bottom: 10px;
+      font-size:0.99rem;
+      line-height:1.6;
+      text-align:center;
+    }
+    .note{
+      margin-top:0.9rem;
+      background: rgba(20,34,20,0.45);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      color:#d7f7c6;
+      line-height:1.65;
+      font-size:0.95rem;
+    }
+    .pill{
+      display:inline-block;
+      padding: 0.22rem 0.7rem;
+      border-radius: 999px;
+      border:1px solid var(--glass-border);
+      background: rgba(20,34,20,0.55);
+      color:#d7f7c6;
+      font-weight:900;
+      font-size:0.86rem;
+      letter-spacing:0.02em;
+      margin-right:0.35rem;
+      margin-top:0.35rem;
+    }
+    code{
+      background: rgba(20,34,20,0.55);
+      border: 1px solid rgba(168,207,69,0.25);
+      padding: 0.15rem 0.35rem;
+      border-radius: 8px;
+      font-weight: 800;
+      color: #dfffc0;
+    }
+
+    .table{
+      width:100%;
+      border-spacing:0 6px;
+      font-size:0.98rem;
+      margin-top: 0.6rem;
+    }
+    .table th, .table td{ padding:8px 6px; }
+    .table th{
+      text-align:left;
+      color:var(--accent);
+      border-bottom:1px solid #38563880;
+      font-weight:900;
+    }
+    .table td{
+      background:#232f2370;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <img src="https://pngimg.com/d/drone_PNG33.png" class="drone-3d" alt="3D Military Drone" />
+
+  <nav class="fixed w-full py-3 px-3 flex justify-center shadow-xl" style="backdrop-filter: blur(9px);">
+    <div class="tab-group flex gap-8">
+      <a href="index.html" class="tab">Home</a>
+      <a href="encrypt.html" class="tab">Encrypt</a>
+      <a href="Decrypt.html" class="tab">Decrypt</a>
+      <a href="Control.html" class="tab active">Help Center</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Help Center</h1>
+    <div class="sub">
+      This page explains <b>how to use</b> your project and <b>how to present it</b> clearly:
+      the <span style="color:var(--guide-color); font-weight:900;">Chaos + Diffusion Encryption</span> workflow,
+      the <span style="color:var(--analysis-color); font-weight:900;">Security Analysis Lab</span> (Entropy/Correlation),
+      and a <span style="color:var(--support-color); font-weight:900;">Troubleshooting</span> section for common issues.
+    </div>
+
+    <div class="grid-container">
+      <!-- Usage Guide -->
+      <section tabindex="0" class="card guide" aria-label="Usage guide">
+        <img class="icon" src="https://img.icons8.com/fluency/96/help.png" alt="Help icon" />
+        <div class="title">Usage Guide</div>
+        <div class="desc">
+          Step-by-step instructions for encrypting and decrypting images, plus the key rules that must match for perfect recovery.
+        </div>
+        <div class="btn-group">
+          <button class="btn guide" onclick="openModal('encrypt_steps')">Encrypt Steps</button>
+          <button class="btn guide" onclick="openModal('decrypt_steps')">Decrypt Steps</button>
+          <button class="btn guide" onclick="openModal('key_rules')">Key Rules</button>
+        </div>
+      </section>
+
+      <!-- Analysis Lab -->
+      <section tabindex="0" class="card analysis" aria-label="Security analysis lab">
+        <img class="icon" src="https://img.icons8.com/fluency/96/combo-chart.png" alt="Analysis icon" />
+        <div class="title">Security Analysis Lab</div>
+        <div class="desc">
+          Understand what Entropy and Correlation mean, what good results look like, and how to explain them in your presentation.
+        </div>
+        <div class="btn-group">
+          <button class="btn analysis" onclick="openModal('metrics')">Metrics</button>
+          <button class="btn analysis" onclick="openModal('expected')">Expected Results</button>
+          <button class="btn analysis" onclick="openModal('demo_script')">Presentation Script</button>
+        </div>
+      </section>
+
+      <!-- Support / Troubleshooting -->
+      <section tabindex="0" class="card support" aria-label="Support and troubleshooting">
+        <img class="icon" src="https://img.icons8.com/fluency/96/maintenance.png" alt="Support icon" />
+        <div class="title">Support & Troubleshooting</div>
+        <div class="desc">
+          Fix “decryption not identical” problems, understand PNG vs JPEG, performance limits, and safe workflow rules.
+        </div>
+        <div class="btn-group">
+          <button class="btn support" onclick="openModal('common_issues')">Common Issues</button>
+          <button class="btn support" onclick="openModal('formats')">Formats & Compatibility</button>
+          <button class="btn support" onclick="openModal('roadmap')">Roadmap</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="modal" style="display:none"></div>
+
+  <script>
+    function openModal(section){
+      let content = '';
+
+      if(section === 'encrypt_steps'){
+        content = `
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+          <h2>How to Encrypt (Encrypt Page)</h2>
+          <div class="muted">Follow these steps to produce the encrypted PNG image.</div>
+          <ul class="list">
+            <li><b>1) Upload an image</b><br>Prefer <code>.png</code> for perfect recovery (lossless pixels).</li>
+            <li><b>2) Enter the encryption key</b><br>Use the same key later for decryption (case-sensitive).</li>
+            <li><b>3) Click Encrypt & Download</b><br>The output is a noise-like image saved as <code>_encrypted.png</code>.</li>
+            <li><b>4) Do not edit the encrypted file</b><br>Do not re-save it in apps that change pixels/compression.</li>
+          </ul>
+          <div class="note">
+            <span class="pill">Best</span> Use PNG end-to-end.<br>
+            <span class="pill">Avoid</span> Editing the encrypted image in external tools.
+          </div>
+        `;
+      }
+
+      if(section === 'decrypt_steps'){
+        content = `
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+          <h2>How to Decrypt (Decrypt Page)</h2>
+          <div class="muted">Use the encrypted PNG + the exact same key to recover the original image.</div>
+          <ul class="list">
+            <li><b>1) Upload the encrypted image</b><br>Select the file that ends with <code>_encrypted.png</code>.</li>
+            <li><b>2) Enter the same key</b><br>Any difference will generate a different chaos stream and fail recovery.</li>
+            <li><b>3) Click Decrypt & Download</b><br>The output is saved as <code>_decrypted.png</code>.</li>
+            <li><b>4) Verify result</b><br>The decrypted image should match the original pixel-by-pixel (when PNG workflow is used).</li>
+          </ul>
+          <div class="note">
+            If the decrypted image is not identical, check <b>Formats & Compatibility</b> and <b>Common Issues</b>.
+          </div>
+        `;
+      }
+
+      if(section === 'key_rules'){
+        content = `
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+          <h2>Key Rules (Very Important)</h2>
+          <div class="muted">Decryption works only when the chaos seeds and permutation match exactly.</div>
+          <ul class="list">
+            <li><b>Case-sensitive</b><br><code>ABC</code> is different from <code>abc</code>.</li>
+            <li><b>Same key for both stages</b><br>Your code derives two seeds from the same password:
+              <span class="pill">scramble seed</span> and <span class="pill">diffusion seed</span>.
+            </li>
+            <li><b>Same resolution matters</b><br>Permutation length depends on <code>width × height</code>. If pixels change, recovery breaks.</li>
+            <li><b>Use lossless pipeline</b><br>PNG keeps pixels stable; JPEG may change pixels due to compression.</li>
+          </ul>
+          <div class="note">
+            Quick rule: <b>Same file (pixels) + same key = perfect decryption</b>.
+          </div>
+        `;
+      }
+
+      if(section === 'metrics'){
+        content = `
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+          <h2>Metrics Explained</h2>
+          <div class="muted">These are the two main metrics your project prints after encryption.</div>
+          <table class="table">
+            <tr>
+              <th>Metric</th>
+              <th>Meaning</th>
+              <th>Target for Encrypted Image</th>
+            </tr>
+            <tr>
+              <td><b>Entropy (grayscale)</b></td>
+              <td>How random the pixel values appear.</td>
+              <td>Close to <b>8.0</b> bits (high randomness)</td>
+            </tr>
+            <tr>
+              <td><b>Correlation (horizontal)</b></td>
+              <td>How similar neighboring pixels are.</td>
+              <td>Close to <b>0</b> (no relationship)</td>
+            </tr>
+          </table>
+          <div class="note">
+            Encrypted images should look like “noise”. That visual result should match the metrics:
+            <b>high entropy</b> + <b>low correlation</b>.
+          </div>
+        `;
+      }
+
+      if(section === 'expected'){
+        content = `
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+          <h2>Expected Results (What “Good” Looks Like)</h2>
+          <div class="muted">Use these points when you discuss results in your report.</div>
+          <ul class="list">
+            <li><b>Encrypted image appears random</b><br>No visible shapes or edges from the original.</li>
+            <li><b>Entropy increases</b><br>Encrypted entropy is higher than the original and near 8.</li>
+            <li><b>Correlation collapses</b><br>Original often has strong correlation; encrypted should be near 0.</li>
+            <li><b>Key sensitivity</b><br>Changing one character in the key produces a totally different encrypted output.</li>
+          </ul>
+          <div class="note">
+            Tip: Use one natural photo + one simple logo image to show the difference clearly.
+          </div>
+        `;
+      }
+
+      if(section === 'demo_script'){
+        content = `
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+          <h2>Presentation Script (Short & Clear)</h2>
+          <div class="muted">You can literally say this while demoing.</div>
+          <ul class="list">
+            <li><b>1)</b> “We read the image pixels as RGBA and apply a chaos-based permutation for confusion.”</li>
+            <li><b>2)</b> “Then we apply diffusion by XOR-ing each RGB byte with a chaos-generated 8-bit mask.”</li>
+            <li><b>3)</b> “The output becomes noise-like, increasing entropy and reducing pixel correlation.”</li>
+            <li><b>4)</b> “Using the same key, we reverse diffusion and then reverse the permutation to recover the original.”</li>
+          </ul>
+          <div class="note">
+            Keep it simple: <b>Confusion → Diffusion → Metrics → Perfect Recovery</b>.
+          </div>
+        `;
+      }
+
+      if(section === 'common_issues'){
+        content = `
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+          <h2>Common Issues & Fixes</h2>
+          <div class="muted">Most problems come from pixel changes or key mismatch.</div>
+          <ul class="list">
+            <li><b>Problem:</b> Decrypted image is not identical<br>
+                <b>Fix:</b> Ensure you used PNG and did not re-save the encrypted file in any editor.</li>
+            <li><b>Problem:</b> Decryption looks “almost right” but has artifacts<br>
+                <b>Fix:</b> You likely started from JPEG. Use PNG input for strict equality tests.</li>
+            <li><b>Problem:</b> Decryption totally fails (garbage output)<br>
+                <b>Fix:</b> Key is not exactly the same (spacing/case) or file pixels changed.</li>
+            <li><b>Problem:</b> Slow performance on big images<br>
+                <b>Fix:</b> Reduce resolution; sorting a full permutation in the browser is heavy.</li>
+          </ul>
+          <div class="note">
+            Fast test: encrypt a small <b>PNG</b> (e.g., 512×512), then decrypt immediately without opening the encrypted file anywhere else.
+          </div>
+        `;
+      }
+
+      if(section === 'formats'){
+        content = `
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+          <h2>Formats & Compatibility</h2>
+          <div class="muted">To guarantee deterministic results, keep formats stable.</div>
+          <ul class="list">
+            <li><b>Recommended:</b> <code>PNG</code><br>Lossless => stable pixels => perfect recovery.</li>
+            <li><b>Not recommended for strict equality:</b> <code>JPG/JPEG</code><br>Compression changes pixels => decrypted output may differ.</li>
+            <li><b>Do not “optimize” images after encryption</b><br>Optimizers can alter data and break decryption.</li>
+            <li><b>Alpha channel</b><br>Your implementation keeps alpha aligned; RGB is the main encrypted stream.</li>
+          </ul>
+          <div class="note">
+            If your goal is “same image 100%”, treat PNG as a hard requirement.
+          </div>
+        `;
+      }
+
+      if(section === 'roadmap'){
+        content = `
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+          <h2>Roadmap (Optional Upgrades)</h2>
+          <div class="muted">If you want to make the project look more advanced in the UI.</div>
+          <ul class="list">
+            <li><b>Show charts inside the website</b><br>Render histogram + correlation plots directly on the page.</li>
+            <li><b>Add an internal header</b><br>Store <code>width</code>, <code>height</code>, and <code>version</code> so decrypt can validate inputs before processing.</li>
+            <li><b>Add a “compare” tool</b><br>Compute pixel-difference rate between original and decrypted for a clear “100% match” badge.</li>
+          </ul>
+          <div class="note">
+            If you want, I can add: <b>Histogram chart + Correlation scatter</b> directly into Encrypt page.
+          </div>
+        `;
+      }
+
+      document.getElementById('modal').innerHTML =
+        `<div class="modal-bg" onclick="closeModal(event)">
+          <div class="modal-content" onclick="event.stopPropagation()">
+            ${content}
+          </div>
+        </div>`;
+      document.getElementById('modal').style.display = "block";
+    }
+
+    function closeModal(e){
+      if(e && e.target !== e.currentTarget) return;
+      document.getElementById('modal').innerHTML = '';
+      document.getElementById('modal').style.display = "none";
+    }
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === "Escape") closeModal();
+    });
+  </script>
+</body>
+</html>

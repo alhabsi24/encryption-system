@@ -1,0 +1,711 @@
+
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Encrypt | Military Encryption System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --glass-bg: rgba(32,49,32,0.82);
+      --glass-border: rgba(168,207,69,0.22);
+      --accent:#a8cf45;
+      --accent-glow: 0 0 30px #a8cf45bb, 0 0 8px #a8cf45a0;
+      --highlight:#5eec85;
+      --danger:#ff6a6a;
+      --bg:#1f2a1f;
+      --panel:#0f160f;
+    }
+
+    html,body{
+      font-family:"Roboto",sans-serif;
+      background:
+        url("https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1400&q=80") center/cover no-repeat,
+        var(--bg);
+      min-height:100vh;
+      color:#d9e4dd;
+      position:relative;
+      scroll-behavior:smooth;
+    }
+
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background:rgba(31,42,31,0.93);
+      z-index:0;
+      pointer-events:none;
+      backdrop-filter: blur(4px) brightness(1.1);
+    }
+
+    nav{
+      backdrop-filter: blur(9px);
+      background: rgba(31,47,31,0.91);
+      border-bottom:2px solid var(--glass-border);
+      box-shadow:0 4px 32px #a8cf4525;
+      z-index:20;
+    }
+
+    .tab{
+      transition:.25s;
+      padding:.7rem 2.1rem;
+      font-size:1.05rem;
+      font-weight:800;
+      border-radius:.75rem;
+      border:2px solid transparent;
+      letter-spacing:1px;
+      color:#d9e4dd;
+      display:inline-block;
+      text-decoration:none;
+    }
+
+    .tab.active,.tab:hover,.tab:focus{
+      background: var(--glass-bg);
+      color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: var(--accent-glow);
+      transform: translateY(-2px) scale(1.05);
+      outline:none;
+    }
+
+    .card{
+      background: var(--glass-bg);
+      border:2px solid var(--glass-border);
+      box-shadow:0 8px 40px #0008, 0 2px 12px #a8cf4522;
+      backdrop-filter: blur(10px) brightness(1.06);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .btn{
+      background: var(--accent);
+      color:#1f2a1f;
+      border:none;
+      border-radius:.75rem;
+      padding:.95rem 1rem;
+      font-weight:900;
+      letter-spacing:1px;
+      width:100%;
+      transition:.2s;
+      box-shadow:0 4px 18px #a8cf4539;
+    }
+    .btn:hover{ background: var(--highlight); transform: scale(1.02); }
+
+    .input{
+      width:100%;
+      background:#222f22;
+      border:1.5px solid #314c31;
+      border-radius:.75rem;
+      padding:.85rem 1rem;
+      outline:none;
+      color:#e7f5dc;
+    }
+    .input:focus{ border-color:var(--accent); box-shadow:0 0 0 2px #a8cf4530; }
+
+    .label{ font-weight:800; margin-top:1rem; display:block; color:#e5ffec; }
+
+    .muted{ color:#9fe6b7; opacity:.95; }
+    .small{ font-size:.95rem; line-height:1.6; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    .ok{ color:var(--accent); font-weight:900; }
+    .bad{ color:var(--danger); font-weight:900; }
+
+    .hr{ height:1px; background:rgba(168,207,69,0.15); margin:1rem 0; }
+
+    canvas.preview{
+      width:100%;
+      max-width:520px;
+      border-radius:1rem;
+      border:1px solid rgba(168,207,69,0.25);
+      background:var(--panel);
+      display:block;
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media(min-width: 1024px){
+      .grid2{ grid-template-columns: 0.95fr 1.05fr; }
+    }
+
+    .badge{
+      display:inline-block;
+      padding:.2rem .7rem;
+      border-radius:999px;
+      border:1px solid rgba(168,207,69,0.25);
+      background:rgba(20,34,20,0.55);
+      color:#dfffc0;
+      font-weight:800;
+      font-size:.85rem;
+      letter-spacing:.02em;
+      margin-right:.35rem;
+      margin-top:.35rem;
+    }
+
+    code{
+      background: rgba(20,34,20,0.55);
+      border: 1px solid rgba(168, 207, 69, 0.25);
+      padding: 0.15rem 0.35rem;
+      border-radius: 8px;
+      font-weight: 700;
+      color: #dfffc0;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="fixed w-full py-3 px-3 flex justify-center shadow-xl">
+    <div class="flex gap-6">
+      <a href="index.html" class="tab">Home</a>
+      <a href="encrypt.html" class="tab active">Encrypt</a>
+      <a href="Decrypt.html" class="tab">Decrypt</a>
+      <a href="Control.html" class="tab">Help</a>
+    </div>
+  </nav>
+
+  <main class="relative z-10 px-4" style="padding-top:5.5rem; padding-bottom:3rem;">
+    <div class="max-w-6xl mx-auto space-y-6">
+
+      <!-- Top Card -->
+      <div class="card">
+        <div class="flex flex-col gap-2">
+          <h1 class="text-2xl font-black" style="color:var(--accent)">
+            Encryption — Chaos Confusion + Bit Diffusion
+          </h1>
+
+          <div class="muted small">
+            Upload an image and the page will generate:
+            <span class="badge">Original</span>
+            <span class="badge">Scrambled</span>
+            <span class="badge">Encrypted</span>
+            <span class="badge">RGB Histograms</span>
+            <span class="badge">Entropy</span>
+            <span class="badge">Correlation</span>
+            <br />
+            For perfect decryption, always download and use the generated <b>.enc</b> file.
+          </div>
+
+          <div class="hr"></div>
+        </div>
+
+        <form id="encrypt-form" class="grid2">
+          <!-- Left column -->
+          <div>
+            <label class="label" for="file-input">Select Image</label>
+            <input class="input" type="file" id="file-input" accept="image/*" required />
+
+            <label class="label" for="key-input">Encryption Key</label>
+            <input class="input" type="password" id="key-input" minlength="6" maxlength="64"
+                   placeholder="Minimum 6 characters" required />
+
+            <div class="mt-4">
+              <button class="btn" type="submit">Encrypt & Download (.enc)</button>
+            </div>
+
+            <div id="message" class="mt-4 small"></div>
+
+            <div class="mt-4 muted small">
+              <b>Important:</b> Do not re-save the encrypted preview as JPG using external editors.
+              Use the <b>.enc</b> file to decrypt back to the exact original pixels.
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div class="space-y-3">
+            <div class="muted small">Side-by-Side Preview</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="card p-3">
+                <div class="small font-black mb-2" style="color:var(--highlight)">Original</div>
+                <canvas id="cv-original" class="preview"></canvas>
+              </div>
+
+              <div class="card p-3">
+                <div class="small font-black mb-2" style="color:var(--highlight)">Scrambled (Confusion)</div>
+                <canvas id="cv-scrambled" class="preview"></canvas>
+              </div>
+
+              <div class="card p-3">
+                <div class="small font-black mb-2" style="color:var(--highlight)">Encrypted (Diffusion)</div>
+                <canvas id="cv-encrypted" class="preview"></canvas>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Histograms -->
+      <div class="card">
+        <h2 class="text-xl font-black" style="color:var(--accent)">Histograms (RGB)</h2>
+        <div class="muted small mt-1">
+          Separate histograms for each color channel (MATLAB-style).
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+          <div class="card">
+            <div class="font-black mb-2" style="color:var(--highlight)">Original Image</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <div class="small font-black mb-1" style="color:#ff6a6a">Red</div>
+                <canvas id="hist-orig-r" class="preview"></canvas>
+              </div>
+              <div>
+                <div class="small font-black mb-1" style="color:#7CFC98">Green</div>
+                <canvas id="hist-orig-g" class="preview"></canvas>
+              </div>
+              <div>
+                <div class="small font-black mb-1" style="color:#7aa7ff">Blue</div>
+                <canvas id="hist-orig-b" class="preview"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="font-black mb-2" style="color:var(--highlight)">Encrypted Image</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <div class="small font-black mb-1" style="color:#ff6a6a">Red</div>
+                <canvas id="hist-enc-r" class="preview"></canvas>
+              </div>
+              <div>
+                <div class="small font-black mb-1" style="color:#7CFC98">Green</div>
+                <canvas id="hist-enc-g" class="preview"></canvas>
+              </div>
+              <div>
+                <div class="small font-black mb-1" style="color:#7aa7ff">Blue</div>
+                <canvas id="hist-enc-b" class="preview"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="card">
+        <h2 class="text-xl font-black" style="color:var(--accent)">Entropy & Correlation</h2>
+        <div class="muted small mt-1">
+          Correlation = horizontal adjacent-pixel correlation (common in image crypto evaluation).
+          The plot color (e.g., blue) is just the default drawing color — the value is what matters.
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+          <div class="card">
+            <div class="font-black mb-2" style="color:var(--highlight)">Entropy Analysis</div>
+            <div class="mono small" id="entropy-box">—</div>
+          </div>
+          <div class="card">
+            <div class="font-black mb-2" style="color:var(--highlight)">Correlation Analysis</div>
+            <div class="mono small" id="corr-box">—</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+<script>
+/* ===================== Core Params ===================== */
+const R = 3.99;
+
+/* ===================== Helpers ===================== */
+function clamp01(x){ return Math.min(0.999999999999, Math.max(1e-12, x)); }
+function encUtf8(str){ return new TextEncoder().encode(str); }
+
+async function sha256(bytes){
+  const buf = await crypto.subtle.digest("SHA-256", bytes);
+  return new Uint8Array(buf);
+}
+
+// password -> x0 (0,1) deterministic
+async function passwordToX0(password, label){
+  const h = await sha256(encUtf8(password + "|" + label));
+  const v = (h[0]<<24) | (h[1]<<16) | (h[2]<<8) | (h[3]);
+  const u = (v >>> 0);
+  const x0 = (u + 1) / (2**32 + 2);
+  return clamp01(x0);
+}
+
+// Logistic map -> uint32 keys (stable sort with radix => deterministic + fast)
+function logisticKeysUint32(N, x0, r){
+  const keys = new Uint32Array(N);
+  let x = x0;
+  for(let i=0;i<N;i++){
+    x = r * x * (1 - x);
+    keys[i] = (Math.floor(x * 4294967296) >>> 0);
+  }
+  return keys;
+}
+
+// Stable radix sort indices by keys (uint32)
+function radixSortIndicesByKeys(keys){
+  const N = keys.length;
+  let idx = new Uint32Array(N);
+  let tmp = new Uint32Array(N);
+  for(let i=0;i<N;i++) idx[i] = i;
+
+  const counts = new Uint32Array(256);
+
+  for(let pass=0; pass<4; pass++){
+    const shift = pass * 8;
+    counts.fill(0);
+
+    for(let i=0;i<N;i++){
+      const k = (keys[idx[i]] >>> shift) & 255;
+      counts[k]++;
+    }
+
+    // prefix sums -> offsets
+    let sum = 0;
+    for(let i=0;i<256;i++){
+      const c = counts[i];
+      counts[i] = sum;
+      sum += c;
+    }
+
+    // stable placement
+    for(let i=0;i<N;i++){
+      const v = idx[i];
+      const k = (keys[v] >>> shift) & 255;
+      tmp[counts[k]++] = v;
+    }
+
+    // swap
+    const swap = idx; idx = tmp; tmp = swap;
+  }
+  return idx; // permutation: dst i takes src idx[i]
+}
+
+function drawImageToCanvas(canvas, rgba, w, h){
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d", { willReadFrequently:true });
+  ctx.putImageData(new ImageData(new Uint8ClampedArray(rgba), w, h), 0, 0);
+}
+
+function rgbaToRgbBytes(rgba){
+  const N = rgba.length / 4;
+  const rgb = new Uint8Array(N*3);
+  for(let i=0;i<N;i++){
+    rgb[i*3]   = rgba[i*4];
+    rgb[i*3+1] = rgba[i*4+1];
+    rgb[i*3+2] = rgba[i*4+2];
+  }
+  return rgb;
+}
+
+function rgbToRgba(rgb, alpha=255){
+  const N = rgb.length/3;
+  const rgba = new Uint8ClampedArray(N*4);
+  for(let i=0;i<N;i++){
+    rgba[i*4]   = rgb[i*3];
+    rgba[i*4+1] = rgb[i*3+1];
+    rgba[i*4+2] = rgb[i*3+2];
+    rgba[i*4+3] = alpha;
+  }
+  return rgba;
+}
+
+function scrambleRGBA(rgba, perm){ // perm[i]=srcPix for dst i
+  const N = perm.length;
+  const out = new Uint8ClampedArray(N*4);
+  for(let i=0;i<N;i++){
+    const s = perm[i]*4;
+    const d = i*4;
+    out[d]   = rgba[s];
+    out[d+1] = rgba[s+1];
+    out[d+2] = rgba[s+2];
+    out[d+3] = rgba[s+3];
+  }
+  return out;
+}
+
+// Diffusion: per byte XOR mask built from 8 chaos bits (MSB->LSB)
+function xorDiffusionBytes(bytes, x0, r){
+  const out = new Uint8Array(bytes.length);
+  let x = x0;
+  for(let i=0;i<bytes.length;i++){
+    let mask = 0;
+    for(let b=7;b>=0;b--){
+      x = r * x * (1 - x);
+      const bit = (Math.floor(x * 1e14) % 2) & 1;
+      mask |= (bit << b);
+    }
+    out[i] = bytes[i] ^ mask;
+  }
+  return out;
+}
+
+// Gray + metrics
+function grayFromRGBA(rgba, w, h){
+  const N = w*h;
+  const g = new Uint8Array(N);
+  for(let i=0;i<N;i++){
+    const r = rgba[i*4], gg = rgba[i*4+1], b = rgba[i*4+2];
+    g[i] = Math.round(0.2989*r + 0.5870*gg + 0.1140*b);
+  }
+  return g;
+}
+
+function entropyGray(gray){
+  const counts = new Uint32Array(256);
+  for(const v of gray) counts[v]++;
+  const total = gray.length;
+  let H = 0;
+  for(let i=0;i<256;i++){
+    const c = counts[i];
+    if(!c) continue;
+    const p = c/total;
+    H -= p * Math.log2(p);
+  }
+  return H;
+}
+
+function corrHorizontal(gray, w, h){
+  let n=0;
+  let sumX=0, sumY=0, sumXX=0, sumYY=0, sumXY=0;
+  for(let r=0;r<h;r++){
+    const row = r*w;
+    for(let c=0;c<w-1;c++){
+      const x = gray[row+c];
+      const y = gray[row+c+1];
+      n++;
+      sumX += x; sumY += y;
+      sumXX += x*x; sumYY += y*y;
+      sumXY += x*y;
+    }
+  }
+  const mx = sumX/n, my = sumY/n;
+  const cov = (sumXY/n) - (mx*my);
+  const vx  = (sumXX/n) - (mx*mx);
+  const vy  = (sumYY/n) - (my*my);
+  const den = Math.sqrt(vx*vy);
+  return den === 0 ? 0 : (cov/den);
+}
+
+// Histogram per channel
+function histRGB(rgba){
+  const r = new Uint32Array(256);
+  const g = new Uint32Array(256);
+  const b = new Uint32Array(256);
+  const N = rgba.length/4;
+  for(let i=0;i<N;i++){
+    r[rgba[i*4]]++;
+    g[rgba[i*4+1]]++;
+    b[rgba[i*4+2]]++;
+  }
+  return {r,g,b};
+}
+
+function drawHist(canvas, hist, color){
+  const w = 256;
+  const h = 160;
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,w,h);
+
+  // max
+  let max = 1;
+  for(let i=0;i<256;i++) if(hist[i] > max) max = hist[i];
+
+  // bg
+  ctx.fillStyle = "#0f160f";
+  ctx.fillRect(0,0,w,h);
+
+  // bars
+  ctx.fillStyle = color;
+  for(let x=0;x<256;x++){
+    const v = hist[x]/max;
+    const barH = Math.round(v*(h-10));
+    ctx.fillRect(x, h-barH, 1, barH);
+  }
+
+  // axis
+  ctx.strokeStyle = "rgba(168,207,69,0.25)";
+  ctx.beginPath();
+  ctx.moveTo(0, h-0.5);
+  ctx.lineTo(w, h-0.5);
+  ctx.stroke();
+}
+
+function downloadBlob(blob, filename){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+/* ===================== .enc File Format =====================
+   magic(4) = 'MES1'
+   ver(1)   = 1
+   width(4) uint32 LE
+   height(4)uint32 LE
+   flags(1) bit0=alpha(1)
+   origHash(32) SHA256 of ORIGINAL RGB bytes
+   encRGBA (width*height*4 bytes) encrypted RGBA (alpha forced=255)
+============================================================== */
+function buildEncFile(width, height, origHash32, encRGBA){
+  const meta = 4 + 1 + 4 + 4 + 1 + 32;
+  const total = meta + encRGBA.length;
+  const buf = new ArrayBuffer(total);
+  const dv = new DataView(buf);
+  let o = 0;
+
+  // magic MES1
+  dv.setUint8(o++, 77);
+  dv.setUint8(o++, 69);
+  dv.setUint8(o++, 83);
+  dv.setUint8(o++, 49);
+
+  // version
+  dv.setUint8(o++, 1);
+
+  dv.setUint32(o, width, true);  o += 4;
+  dv.setUint32(o, height, true); o += 4;
+
+  dv.setUint8(o++, 1); // alpha flag
+
+  new Uint8Array(buf, o, 32).set(origHash32); o += 32;
+  new Uint8Array(buf, o, encRGBA.length).set(encRGBA);
+
+  return new Blob([buf], { type: "application/octet-stream" });
+}
+
+function fitCanvasToMax(canvas, maxW=520){
+  const ratio = canvas.width / canvas.height;
+  const cssW = Math.min(maxW, canvas.width);
+  canvas.style.width = cssW + "px";
+  canvas.style.height = (cssW / ratio) + "px";
+}
+
+/* ===================== Main UI ===================== */
+document.getElementById("encrypt-form").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+
+  const msg = document.getElementById("message");
+  msg.innerHTML = "";
+
+  const file = document.getElementById("file-input").files[0];
+  const password = document.getElementById("key-input").value;
+
+  if(!file || password.length < 6){
+    msg.innerHTML = `<div class="bad">Please select an image and enter a key (minimum 6 characters).</div>`;
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+
+  img.onload = async ()=>{
+    try{
+      // Original
+      const cvO = document.getElementById("cv-original");
+      const ctxO = cvO.getContext("2d", { willReadFrequently:true });
+      cvO.width = img.width; cvO.height = img.height;
+      ctxO.drawImage(img,0,0);
+      const idO = ctxO.getImageData(0,0,cvO.width,cvO.height);
+      const rgbaOrig = new Uint8ClampedArray(idO.data); // copy
+      fitCanvasToMax(cvO);
+
+      const W = cvO.width, H = cvO.height;
+      const N = W*H;
+
+      // Seeds
+      const x0_scr = await passwordToX0(password, "scramble");
+      const x0_dif = await passwordToX0(password, "diffuse");
+
+      // Metrics (original)
+      const gO = grayFromRGBA(rgbaOrig, W, H);
+      const entO = entropyGray(gO);
+      const corrO = corrHorizontal(gO, W, H);
+
+      // Confusion (scramble)
+      const keys = logisticKeysUint32(N, x0_scr, R);
+      const perm = radixSortIndicesByKeys(keys);
+      const rgbaScr = scrambleRGBA(rgbaOrig, perm);
+
+      drawImageToCanvas(document.getElementById("cv-scrambled"), rgbaScr, W, H);
+      fitCanvasToMax(document.getElementById("cv-scrambled"));
+
+      // Diffusion (RGB only)
+      const scrRGB = rgbaToRgbBytes(rgbaScr);
+      const encRGB = xorDiffusionBytes(scrRGB, x0_dif, R);
+      const rgbaEnc = rgbToRgba(encRGB, 255);
+
+      drawImageToCanvas(document.getElementById("cv-encrypted"), rgbaEnc, W, H);
+      fitCanvasToMax(document.getElementById("cv-encrypted"));
+
+      // Histograms
+      const hO = histRGB(rgbaOrig);
+      drawHist(document.getElementById("hist-orig-r"), hO.r, "#ff6a6a");
+      drawHist(document.getElementById("hist-orig-g"), hO.g, "#7CFC98");
+      drawHist(document.getElementById("hist-orig-b"), hO.b, "#7aa7ff");
+
+      const hE = histRGB(rgbaEnc);
+      drawHist(document.getElementById("hist-enc-r"), hE.r, "#ff6a6a");
+      drawHist(document.getElementById("hist-enc-g"), hE.g, "#7CFC98");
+      drawHist(document.getElementById("hist-enc-b"), hE.b, "#7aa7ff");
+
+      // Metrics (encrypted)
+      const gE = grayFromRGBA(rgbaEnc, W, H);
+      const entE = entropyGray(gE);
+      const corrE = corrHorizontal(gE, W, H);
+
+      document.getElementById("entropy-box").innerHTML =
+        `Entropy (original): ${entO.toFixed(5)}<br>` +
+        `Entropy (encrypted): ${entE.toFixed(5)}`;
+
+      document.getElementById("corr-box").innerHTML =
+        `Correlation (original): ${corrO.toFixed(6)}<br>` +
+        `Correlation (encrypted): ${corrE.toFixed(6)}`;
+
+      // Build .enc + download
+      const origRGB = rgbaToRgbBytes(rgbaOrig);
+      const origHash = await sha256(origRGB);
+      const encFile = buildEncFile(W, H, origHash, rgbaEnc);
+
+      const base = file.name.replace(/\.[^.]+$/,"");
+      downloadBlob(encFile, base + ".enc");
+
+      msg.innerHTML =
+        `<div class="ok">Encryption complete ✅</div>` +
+        `<div class="muted small mt-2">
+          Downloaded: <b>${base}.enc</b> (use this file in the Decrypt page).<br>
+          <a href="#" id="dlpng" class="mono" style="color:var(--highlight); text-decoration:underline;">
+            Download encrypted preview PNG (optional)
+          </a>
+        </div>`;
+
+      document.getElementById("dlpng").onclick = (ev)=>{
+        ev.preventDefault();
+        const cv = document.createElement("canvas");
+        cv.width = W; cv.height = H;
+        const c = cv.getContext("2d");
+        c.putImageData(new ImageData(new Uint8ClampedArray(rgbaEnc), W, H), 0, 0);
+        cv.toBlob((blob)=> downloadBlob(blob, base + "_encrypted.png"), "image/png");
+      };
+
+    }catch(err){
+      msg.innerHTML = `<div class="bad">Error: ${String(err)}</div>`;
+    }finally{
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  img.onerror = ()=>{
+    msg.innerHTML = `<div class="bad">Failed to load image.</div>`;
+    URL.revokeObjectURL(url);
+  };
+
+  img.src = url;
+});
+</script>
+</body>
+</html>
